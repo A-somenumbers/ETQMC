@@ -11,6 +11,12 @@ public class playerMovement : MonoBehaviour
     [SerializeField] private float dashSpeed;
     public float dashLength = .5f, dashCool = 1f;
     private float dashCounter, DashCoolCounter;
+    private float currentX;
+    private float currentY;
+
+    //PlayerLooking&Following
+    [SerializeField] private Camera mainCamera;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -21,6 +27,13 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 mouseScreenPosition = Input.mousePosition;
+        Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseScreenPosition);
+        mouseWorldPosition.z = transform.position.z;
+        Vector3 direction = mouseWorldPosition - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
 
@@ -38,6 +51,7 @@ public class playerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
+            
             if (DashCoolCounter <= 0 && dashCounter <= 0)
             {
                 activeMvSpeed = dashSpeed;
