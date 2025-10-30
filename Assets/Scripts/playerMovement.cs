@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseScreenPosition);
         mouseWorldPosition.z = transform.position.z;
         Vector3 direction = mouseWorldPosition - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         
         moveInput.x = Input.GetAxisRaw("Horizontal");

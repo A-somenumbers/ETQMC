@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Dash
+  - wall
   layers:
   - Default
   - TransparentFX
