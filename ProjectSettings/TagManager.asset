@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Dash
   - wall
+  - proj
+  - Enemy
   layers:
   - Default
   - TransparentFX

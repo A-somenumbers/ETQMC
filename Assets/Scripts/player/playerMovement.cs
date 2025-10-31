@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -51,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            
+
             if (DashCoolCounter <= 0 && dashCounter <= 0)
             {
                 activeMvSpeed = dashSpeed;
@@ -74,6 +75,13 @@ public class PlayerMovement : MonoBehaviour
         if (DashCoolCounter > 0)
         {
             DashCoolCounter -= Time.deltaTime;
+        }
+    }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Dash"))
+        {
+            Destroy(collision.gameObject);
         }
     }
 }

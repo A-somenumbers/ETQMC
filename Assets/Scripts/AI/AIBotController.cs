@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AIBotController : MonoBehaviour
@@ -55,5 +56,15 @@ public class AIBotController : MonoBehaviour
     {
         Vector2 dir = (target - transform.position).normalized;
         transform.position += (Vector3)(dir * moveSpeed * Time.deltaTime);
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("proj"))
+        {
+            Console.WriteLine("hit!");
+        }
+        
+        
     }
 }
