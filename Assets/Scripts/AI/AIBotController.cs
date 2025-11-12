@@ -27,6 +27,9 @@ public class AIBotController : MonoBehaviour
             _hasSeenPlayer = true;
             _lastSeenPlayerPos = player.position;
             MoveTowards(player.position);
+            Vector3 direction = player.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
         else if (_hasSeenPlayer)
         {
