@@ -615,11 +615,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIBotController
   player: {fileID: 330404063}
-  moveSpeed: 3
-  sightRange: 15
-  obstacleMask:
+  pathfinder: {fileID: 1281344629}
+  wallMask:
     serializedVersion: 2
     m_Bits: 0
+  easyMoveSpeed: 1.5
+  hardMoveSpeed: 4.5
+  repathIntervalEasy: 1
+  repathIntervalHard: 0.2
+  timeToMaxDifficulty: 60
+  sightRange: 12
+  stuckDistanceThreshold: 0.02
+  stuckTimeThreshold: 0.3
 --- !u!50 &872995218
 Rigidbody2D:
   serializedVersion: 5
@@ -843,6 +850,70 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2032966653}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1281344628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1281344631}
+  - component: {fileID: 1281344630}
+  - component: {fileID: 1281344629}
+  m_Layer: 0
+  m_Name: PathfindingGrid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1281344629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281344628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0ee6551246b242c4a210a6d9fbcd0b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AStar2D
+  grid: {fileID: 1281344630}
+--- !u!114 &1281344630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281344628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca41566fe3704c9cb507519fdb4f80a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Grid2D
+  worldBottomLeft: {x: -40, y: -20}
+  worldTopRight: {x: 40, y: 20}
+  cellSize: 1.1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!4 &1281344631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281344628}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1577922269
@@ -1070,7 +1141,7 @@ GameObject:
   - component: {fileID: 2032966656}
   - component: {fileID: 2032966658}
   - component: {fileID: 2032966657}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tilemap_walls
   m_TagString: wall
   m_Icon: {fileID: 0}
@@ -1086,7 +1157,7 @@ Transform:
   m_GameObject: {fileID: 2032966652}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.08, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1537,3 +1608,4 @@ SceneRoots:
   - {fileID: 312898606}
   - {fileID: 606332292}
   - {fileID: 872995220}
+  - {fileID: 1281344631}
