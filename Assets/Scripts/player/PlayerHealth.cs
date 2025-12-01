@@ -6,15 +6,30 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
+    [Header("UI")]
+    public WorldHealthBar healthBar;   // drag the child's WorldHealthBar here
+
     void Awake()
     {
         currentHealth = maxHealth;
+
+        // initialize bar if assigned
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(1f); // full health
+        }
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         if (currentHealth < 0) currentHealth = 0;
+
+        if (healthBar != null)
+        {
+            float normalized = (float)currentHealth / maxHealth;
+            healthBar.SetHealth(normalized);
+        }
 
         Debug.Log("Player took damage. HP = " + currentHealth);
 
@@ -27,7 +42,6 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died!");
-        // For now just disable player. You can replace with Game Over UI later.
         gameObject.SetActive(false);
     }
 }
