@@ -3,31 +3,30 @@ using UnityEngine;
 public class BulletDamage : MonoBehaviour
 {
     public int damage = 10;
+
     public float lifeTime = 3f;
 
     void Start()
     {
-        // auto-destroy after a few seconds so bullets don't live forever
         Destroy(gameObject, lifeTime);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Only damage enemies
+        // Only hit enemies
         if (other.CompareTag("Enemy"))
         {
             EnemyHealth eh = other.GetComponent<EnemyHealth>();
             if (eh != null)
             {
-                eh.TakeDamage(damage);
+                eh.TakeDamage(damage);  // 👈 only reduce HP, DON'T destroy enemy here
             }
 
-            Destroy(gameObject); // bullet disappears on hit
+            Destroy(gameObject);        // destroy bullet, not enemy
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
-            // Optional: bullet dies when it hits a wall
-            Destroy(gameObject);
+            Destroy(gameObject);        // bullet dies on walls
         }
     }
 }

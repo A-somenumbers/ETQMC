@@ -4,44 +4,59 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class AIBotController : MonoBehaviour
 {
+    EnemyHealth myHealth;
+
     [Header("References")]
     public Transform player;      // drag Player here
     public AStar2D pathfinder;    // drag PathfindingGrid (with AStar2D) here
     public LayerMask wallMask;    // set to Walls
 
-    [Header("Movement / Difficulty")]
+    [Header("Movement / Difficulty (base)")]
     public float easyMoveSpeed = 1.5f;
     public float hardMoveSpeed = 4.5f;
     public float repathIntervalEasy = 1.0f;
     public float repathIntervalHard = 0.2f;
     public float timeToMaxDifficulty = 60f;   // seconds from easy -> hard
 
+    [Header("Enrage Tuning")]
+    public float calmMoveSpeed = 2.5f;        // when rage = 0, lerp with base difficulty
+    public float enragedMoveSpeed = 6f;       // absolute max speed when fully enraged
+    public float calmRepathInterval = 0.6f;   // extra safety, but we mainly use difficulty repath
+    public float enragedRepathInterval = 0.15f;
+
+    [Header("Direct Chase Fallback")]
+    public float directChaseMinDistance = 0.3f;      // don't jitter when right on top
+    public float stuckDirectChaseSpeedMultiplier = 1.3f;
+
     [Header("Vision")]
     public float sightRange = 12f;           // how far the bot can see the player
 
-    [Header("Stuck Detection (optional but useful)")]
+    [Header("Stuck Detection")]
     public float stuckDistanceThreshold = 0.01f;
     public float stuckTimeThreshold = 0.4f;
 
     // runtime
-    private Rigidbody2D rb;
+    Rigidbody2D rb;
 
-    private List<Vector2> currentPath = new List<Vector2>();
-    private int pathIndex = 0;
+    List<Vector2> currentPath = new List<Vector2>();
+    int pathIndex = 0;
 
-    private float diffTimer = 0f;
-    private float moveSpeed;
-    private float repathInterval;
-    private float repathTimer = 0f;
+    float diffTimer = 0f;
+    float difficulty01 = 0f;    // 0..1 from easy to hard
 
-    private Vector2 lastPos;
-    private float stuckTimer = 0f;
+    float moveSpeed;            // effective speed after difficulty + rage
+    float repathInterval;       // effective repath after difficulty + rage
+    float repathTimer = 0f;
 
-    private Vector2 lastSeenPlayerPos;
-    private bool hasLastSeenPlayer = false;   // true only if we've seen the player at least once
+    Vector2 lastPos;
+    float stuckTimer = 0f;
+
+    Vector2 lastSeenPlayerPos;
+    bool hasLastSeenPlayer = false;   // true only if we've seen the player at least once
 
     void Awake()
     {
+        myHealth = GetComponent<EnemyHealth>();
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
         rb.freezeRotation = true; // keep sprite upright
@@ -53,13 +68,13 @@ public class AIBotController : MonoBehaviour
 
     void Update()
     {
+        // If we don't have references (or the player was destroyed), do nothing.
         if (player == null || pathfinder == null)
         {
-            Debug.LogWarning("AIBotController: missing Player or Pathfinder reference");
             return;
         }
 
-        UpdateDifficulty();
+        UpdateDifficulty();   // updates difficulty01
 
         repathTimer -= Time.deltaTime;
 
@@ -67,11 +82,9 @@ public class AIBotController : MonoBehaviour
 
         if (canSee)
         {
-            // We see the player now – update last seen position
             lastSeenPlayerPos = player.position;
             hasLastSeenPlayer = true;
 
-            // Optionally re-path more often while in sight
             if (repathTimer <= 0f)
             {
                 RequestPathToLastSeen();
@@ -79,9 +92,8 @@ public class AIBotController : MonoBehaviour
         }
         else
         {
-            // Can't see the player – do NOT chase their current position.
-            // Only move towards lastSeenPlayerPos if we have one.
-            if (hasLastSeenPlayer && repathTimer <= 0f && (currentPath == null || currentPath.Count == 0))
+            if (hasLastSeenPlayer && repathTimer <= 0f &&
+                (currentPath == null || currentPath.Count == 0))
             {
                 RequestPathToLastSeen();
             }
@@ -90,6 +102,35 @@ public class AIBotController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (player == null) return;
+
+        // 0..1 rage from health (0 calm, 1 fully enraged)
+        float rage = (myHealth != null) ? myHealth.currentRage01 : 0f;
+
+        // --- Combine difficulty ramp + enrage into final speed + repath ---
+
+        // Base from difficulty: easy -> hard
+        float baseMoveFromDiff   = Mathf.Lerp(easyMoveSpeed,      hardMoveSpeed,      difficulty01);
+        float baseRepathFromDiff = Mathf.Lerp(repathIntervalEasy, repathIntervalHard, difficulty01);
+
+        // Final move speed: blend base difficulty speed toward enraged speed
+        moveSpeed = Mathf.Lerp(baseMoveFromDiff, enragedMoveSpeed, rage);
+
+        // Final repath interval: as rage increases, recalc more often
+        float baseRepath = Mathf.Lerp(baseRepathFromDiff, calmRepathInterval, rage); // optional extra blend
+        repathInterval   = Mathf.Lerp(baseRepath, enragedRepathInterval, rage);
+
+        // --- Movement ---
+
+        // If we don't currently have a usable path, directly chase the player
+        if (currentPath == null || currentPath.Count == 0 || pathIndex >= currentPath.Count)
+        {
+            DirectChase();
+            CheckStuck();
+            RotateTowardPlayer();
+            return;
+        }
+
         FollowPath();
         CheckStuck();
         RotateTowardPlayer();
@@ -99,10 +140,7 @@ public class AIBotController : MonoBehaviour
     void UpdateDifficulty()
     {
         diffTimer += Time.deltaTime;
-        float t = Mathf.Clamp01(diffTimer / timeToMaxDifficulty);
-
-        moveSpeed      = Mathf.Lerp(easyMoveSpeed,      hardMoveSpeed,      t);
-        repathInterval = Mathf.Lerp(repathIntervalEasy, repathIntervalHard, t);
+        difficulty01 = Mathf.Clamp01(diffTimer / timeToMaxDifficulty);
     }
 
     // ---------------- VISION ----------------
@@ -137,7 +175,8 @@ public class AIBotController : MonoBehaviour
 
         if (currentPath == null || currentPath.Count == 0)
         {
-            Debug.LogWarning("AIBotController: A* returned NO PATH to lastSeenPlayerPos. Check grid bounds / walls.");
+            // Path failed; let FixedUpdate fall back to DirectChase
+            currentPath = null;
             return;
         }
 
@@ -148,7 +187,8 @@ public class AIBotController : MonoBehaviour
         }
     }
 
-    void FollowPath(){
+    void FollowPath()
+    {
         if (currentPath == null || currentPath.Count == 0) return;
         if (pathIndex >= currentPath.Count) return;
 
@@ -168,7 +208,7 @@ public class AIBotController : MonoBehaviour
         float   stepDist = moveSpeed * Time.fixedDeltaTime;
         if (stepDist > dist) stepDist = dist;
 
-        // 👇 IMPORTANT: check if this step would hit a wall
+        // Check if this step would hit a wall
         RaycastHit2D hit = Physics2D.Raycast(
             pos,
             dir,
@@ -180,13 +220,39 @@ public class AIBotController : MonoBehaviour
         {
             // We'd collide with a wall if we moved -> force a new A* path
             repathTimer = 0f;
-            RequestPathToLastSeen();   // or RequestPath(player.position) if you're still doing live chase
+            RequestPathToLastSeen();
             return;
         }
 
         rb.MovePosition(pos + dir * stepDist);
     }
 
+    // --------------- DIRECT CHASE FALLBACK ----------------
+    void DirectChase()
+    {
+        // Use player’s current position to keep pressure high,
+        // but ONLY if there is no wall in the way.
+        Vector2 myPos = rb.position;
+        Vector2 targetPos = player.position;
+        Vector2 toTarget = targetPos - myPos;
+        float dist = toTarget.magnitude;
+
+        if (dist <= directChaseMinDistance)
+            return;
+
+        Vector2 dir = toTarget.normalized;
+
+        // if a wall is between us and the player, don't direct-chase.
+        RaycastHit2D hit = Physics2D.Raycast(myPos, dir, dist, wallMask);
+        if (hit.collider != null)
+        {
+            // A wall is blocking line of sight → let A* pathfinding handle it.
+            return;
+        }
+
+        float chaseSpeed = moveSpeed * stuckDirectChaseSpeedMultiplier;
+        rb.MovePosition(myPos + dir * chaseSpeed * Time.fixedDeltaTime);
+    }
 
 
     // --------------- STUCK HANDLING ----------------
@@ -201,7 +267,7 @@ public class AIBotController : MonoBehaviour
             if (stuckTimer >= stuckTimeThreshold)
             {
                 stuckTimer = 0f;
-                // Force new A* path to the same last seen position
+                // Force new A* path to the last seen position
                 repathTimer = 0f;
                 RequestPathToLastSeen();
             }
@@ -214,7 +280,7 @@ public class AIBotController : MonoBehaviour
         lastPos = pos;
     }
 
-    // --------------- LOOK AT PLAYER (just visual) ----------------
+    // --------------- LOOK AT PLAYER (visual only) ----------------
     void RotateTowardPlayer()
     {
         if (player == null) return;

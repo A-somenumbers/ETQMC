@@ -17,10 +17,19 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 targetPosition = _playerMovement.transform.position + _cameraOffset; // where the camera wants to be
+        // If player has been destroyed or missing, do nothing
+        if (_playerMovement == null)
+        {
+            return;
+        }
 
-        _cameraTransform.position = Vector3.Lerp(_cameraTransform.position, targetPosition, CAM_SPEED * Time.fixedDeltaTime);
-
-
+        // Safe to use
+        Vector3 targetPosition = _playerMovement.transform.position + _cameraOffset; 
+        _cameraTransform.position = Vector3.Lerp(
+            _cameraTransform.position,
+            targetPosition,
+            CAM_SPEED * Time.fixedDeltaTime
+        );
     }
+
 }

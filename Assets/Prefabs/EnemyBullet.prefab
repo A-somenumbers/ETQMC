@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 4121788896935721004}
   - component: {fileID: 2709962559248459770}
   - component: {fileID: 6287942354689479005}
-  - component: {fileID: 2722823732515147526}
-  - component: {fileID: 4176304743219792710}
   - component: {fileID: -333018015265831671}
   m_Layer: 0
   m_Name: EnemyBullet
@@ -168,32 +166,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2722823732515147526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 361224930081385982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac122f9a193498b4aa0b759f6133aa04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
---- !u!114 &4176304743219792710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 361224930081385982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aac2d40569b244a44af113b5dd898fae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BulletDamage
-  damage: 10
-  lifeTime: 3
 --- !u!114 &-333018015265831671
 MonoBehaviour:
   m_ObjectHideFlags: 0
