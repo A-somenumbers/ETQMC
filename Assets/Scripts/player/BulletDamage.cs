@@ -16,13 +16,15 @@ public class BulletDamage : MonoBehaviour
         // Only hit enemies
         if (other.CompareTag("Enemy"))
         {
+            Destroy(gameObject);
             EnemyHealth eh = other.GetComponent<EnemyHealth>();
             if (eh != null)
             {
-                eh.TakeDamage(damage);  // 👈 only reduce HP, DON'T destroy enemy here
+                eh.TakeDamage(damage);
+                  // 👈 only reduce HP, DON'T destroy enemy here
             }
 
-            Destroy(gameObject);        // destroy bullet, not enemy
+                  // destroy bullet, not enemy
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {

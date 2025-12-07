@@ -363,6 +363,12 @@ MonoBehaviour:
   repathIntervalEasy: 1
   repathIntervalHard: 0.2
   timeToMaxDifficulty: 60
+  calmMoveSpeed: 2.5
+  enragedMoveSpeed: 6
+  calmRepathInterval: 0.6
+  enragedRepathInterval: 0.15
+  directChaseMinDistance: 0.3
+  stuckDirectChaseSpeedMultiplier: 1.3
   sightRange: 12
   stuckDistanceThreshold: 0.02
   stuckTimeThreshold: 0.3
@@ -407,6 +413,7 @@ MonoBehaviour:
   bot: {fileID: 0}
   melee: {fileID: 0}
   shooter: {fileID: 0}
+  currentRage01: 0
 --- !u!114 &4461696606515363240
 MonoBehaviour:
   m_ObjectHideFlags: 0
