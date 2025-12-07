@@ -23,19 +23,22 @@ public class shooting : MonoBehaviour
 
     void Shoot()
     {
-        
-        GameObject bullet = Instantiate(bulletP, firePoint.position, firePoint.rotation);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        rb.AddForce(firePoint.up * bf, ForceMode2D.Impulse);
-        if (PlayerMovement.tripleShot)
+        if(Time.timeScale > 0f)
         {
-            GameObject bullet1 = Instantiate(bulletP, firePoint.position, firePoint.rotation);
-            Rigidbody2D rb1 = bullet1.GetComponent<Rigidbody2D>();
-            rb1.AddForce((firePoint.up + 0.2f*Vector3.left) * bf, ForceMode2D.Impulse);
-            GameObject bullet2 = Instantiate(bulletP, firePoint.position, firePoint.rotation);
-            Rigidbody2D rb2 = bullet2.GetComponent<Rigidbody2D>();
-            rb2.AddForce((firePoint.up + 0.2f*Vector3.right) * bf, ForceMode2D.Impulse);
-        }
+            GameObject bullet = Instantiate(bulletP, firePoint.position, firePoint.rotation);
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            rb.AddForce(firePoint.up * bf, ForceMode2D.Impulse);
+            if (PlayerMovement.tripleShot)
+            {
+                GameObject bullet1 = Instantiate(bulletP, firePoint.position, firePoint.rotation);
+                Rigidbody2D rb1 = bullet1.GetComponent<Rigidbody2D>();
+                rb1.AddForce((firePoint.up + 0.2f*Vector3.left) * bf, ForceMode2D.Impulse);
+                GameObject bullet2 = Instantiate(bulletP, firePoint.position, firePoint.rotation);
+                Rigidbody2D rb2 = bullet2.GetComponent<Rigidbody2D>();
+                rb2.AddForce((firePoint.up + 0.2f*Vector3.right) * bf, ForceMode2D.Impulse);
+            }
 
+        }
+            
     }
 }
