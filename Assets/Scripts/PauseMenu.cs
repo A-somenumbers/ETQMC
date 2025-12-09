@@ -21,11 +21,11 @@ public class PauseMenu : MonoBehaviour
 
     void Start()
     {
-        taggedObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        taggedObjects = GameObject.FindGameObjectsWithTag("MainEnemy");
 
         int count = taggedObjects.Length;
 
-        Debug.Log($"There are {count} GameObjects with the tag 'Enemy' in the scene.");
+        Debug.Log($"There are {count} GameObjects with the tag 'MainEnemy' in the scene.");
         health = playerObject.GetComponent<PlayerHealth>();
         winMenuPanel.SetActive(false);
         pauseMenuPanel.SetActive(false);
@@ -36,15 +36,15 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
-        taggedObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        taggedObjects = GameObject.FindGameObjectsWithTag("MainEnemy");
         
-        if (taggedObjects.Length <= 1)
+        if (taggedObjects.Length <= 0)
         {
             Debug.Log("Win");
             isWin = true;
         } else
         {
-            Debug.Log($"There are {taggedObjects.Length - 1} GameObjects with the tag 'Enemy' in the scene.");
+            Debug.Log($"There are {taggedObjects.Length } GameObjects with the tag 'Enemy' in the scene.");
         }
 
         

@@ -67,8 +67,8 @@ public class UIScript : MonoBehaviour
 
     void enemiesLeft()
     {
-        taggedObjects = GameObject.FindGameObjectsWithTag("Enemy");
-        int enemyCount = taggedObjects.Length-1;
+        taggedObjects = GameObject.FindGameObjectsWithTag("MainEnemy");
+        int enemyCount = taggedObjects.Length;
         enemyCounter.text = "x " + enemyCount.ToString();
 
 
