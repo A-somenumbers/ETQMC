@@ -22,8 +22,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Camera mainCamera;
 
     //Items
-    bool SpeedUp = false;
-    float speedTime = 10f;
+    public bool SpeedUp = false;
+    public float speedTime = 10f;
     private float timeIn = 0;
     public static bool tripleShot = false; 
     
