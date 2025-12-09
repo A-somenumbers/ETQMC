@@ -4,18 +4,53 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
+
+    public GameObject DeathMenuPanel;
     public bool isPaused = false;
-    string currentScene = SceneManager.GetActiveScene().name;
+    public bool isDead = false;
+    string currentScene;
+    public GameObject playerObject;
+    public PlayerHealth health;
+    GameObject[] taggedObjects;
+
 
 
     void Start()
     {
-        pauseMenuPanel.SetActive(false); // Ensure menu is hidden at start
+        taggedObjects = GameObject.FindGameObjectsWithTag("Enemy");
+
+        int count = taggedObjects.Length;
+
+        Debug.Log($"There are {count} GameObjects with the tag 'Enemy' in the scene.");
+        health = playerObject.GetComponent<PlayerHealth>();
+        
+        pauseMenuPanel.SetActive(false);
+        DeathMenuPanel.SetActive(false);
+        isPaused = false;
+        isDead= false;
+        currentScene = SceneManager.GetActiveScene().name; // Ensure menu is hidden at start
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        taggedObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        if (taggedObjects.Length <= 1)
+        {
+            Debug.Log("Win");
+        } else
+        {
+            Debug.Log($"There are {taggedObjects.Length - 1} GameObjects with the tag 'Enemy' in the scene.");
+        }
+
+        
+        if(health.currentHealth<=0)
+        {
+            isDead = true;
+            dead();
+        } 
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !isDead)
         {
             if (isPaused)
             {
@@ -26,6 +61,7 @@ public class PauseMenu : MonoBehaviour
                 PauseGame();
             }
         }
+        
     }
 
     public void PauseGame()
@@ -37,21 +73,34 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+    public void dead()
+    {
+        DeathMenuPanel.SetActive(true);
+        Time.timeScale = 0f; // Stop time
+        isDead = true;
+        // Optionally, unlock and show cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 
     public void ResumeGame()
     {
         pauseMenuPanel.SetActive(false);
+        DeathMenuPanel.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
+        isDead = false;
         
     }
 
     public void RestartGame()
     {
         pauseMenuPanel.SetActive(false);
+        DeathMenuPanel.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
-        SceneManager.LoadScene(currentScene);
+        isDead = false;
+        SceneManager.LoadSceneAsync(currentScene);
         
     }
 

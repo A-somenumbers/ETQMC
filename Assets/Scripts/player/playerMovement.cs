@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
         Dash();
         powerUps();
-        Console.WriteLine("time left" + timeIn);
+        //Console.WriteLine("time left" + timeIn);
 
 
     }
@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     void powerUps()
     {
 
-        Debug.Log("the " + timeIn);
+        //Debug.Log("the " + timeIn);
 
         if (SpeedUp)
         {
@@ -130,5 +130,10 @@ public class PlayerMovement : MonoBehaviour
             Console.WriteLine("triple Obtained");
         }
         
+    }
+
+    public float getDashTime()
+    {
+        return timeIn;
     }
 }
