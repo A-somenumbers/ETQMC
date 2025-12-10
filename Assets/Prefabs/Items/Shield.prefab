@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5354053587014925665, guid: a8f984420e6509d4693e321f329e1a73, type: 3}
       propertyPath: m_Name
-      value: ItemTemplate (2) Variant
+      value: Shield
       objectReference: {fileID: 0}
     - target: {fileID: 5354053587014925665, guid: a8f984420e6509d4693e321f329e1a73, type: 3}
       propertyPath: m_TagString

@@ -26,6 +26,12 @@ public class UIScript : MonoBehaviour
     public PlayerMovement reff;
     public static TimeSpan dtime;
     private float dsTimer;
+
+    public GameObject sUI;
+    [SerializeField] private TMP_Text s;
+    public static TimeSpan stime;
+    private float sTimer;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +39,7 @@ public class UIScript : MonoBehaviour
         stopwatchTime = 0f;
         tsUI.SetActive(false);
         dsUI.SetActive(false);
+        sUI.SetActive(false);
         reff = playerObject.GetComponent<PlayerMovement>();
         dsTimer  = 0f;
     }
@@ -41,6 +48,7 @@ public class UIScript : MonoBehaviour
     void Update()
     {
         dsTimer = playerObject.GetComponent<PlayerMovement>().getDashTime();
+        sTimer = playerObject.GetComponent<PlayerMovement>().getShieldTime();
         ts = GameObject.FindGameObjectsWithTag("shot");
         if(ts.Length == 0)
         {
@@ -49,10 +57,19 @@ public class UIScript : MonoBehaviour
         if (reff.SpeedUp)
         {
             dsUI.SetActive(true);
-        } else
+        } 
+        else
         {
             dsUI.SetActive(false);
         }
+        if (reff.shielded)
+        {
+            sUI.SetActive(true);
+        } else
+        {
+            sUI.SetActive(false);
+        }
+
 
         if(Time.timeScale > 0f)
         {
@@ -63,6 +80,9 @@ public class UIScript : MonoBehaviour
         display.text = time.Minutes.ToString() + ":" + time.Seconds.ToString() + ":" + time.Milliseconds.ToString();
         dtime = TimeSpan.FromSeconds(dsTimer);
         ds.text = dtime.Minutes.ToString() + ":" + dtime.Seconds.ToString() + ":" + dtime.Milliseconds.ToString();
+        stime = TimeSpan.FromSeconds(sTimer);
+        s.text = stime.Minutes.ToString() + ":" + stime.Seconds.ToString() + ":" + stime.Milliseconds.ToString();
+
     }
 
     void enemiesLeft()

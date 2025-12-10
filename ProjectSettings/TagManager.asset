@@ -9,6 +9,10 @@ TagManager:
   - proj
   - Enemy
   - shot
+  - MainEnemy
+  - Double Fire
+  - 'Time Scale '
+  - Shield
   layers:
   - Default
   - TransparentFX

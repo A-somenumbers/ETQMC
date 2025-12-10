@@ -14,7 +14,7 @@ public class BulletDamage : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         // Only hit enemies
-        if (other.CompareTag("MainEnemy"))
+        if (other.CompareTag("MainEnemy")||other.CompareTag("Enemy"))
         {
             Destroy(gameObject);
             EnemyHealth eh = other.GetComponent<EnemyHealth>();

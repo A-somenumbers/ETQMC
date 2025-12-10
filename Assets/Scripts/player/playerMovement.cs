@@ -26,6 +26,10 @@ public class PlayerMovement : MonoBehaviour
     public float speedTime = 10f;
     private float timeIn = 0;
     public static bool tripleShot = false; 
+
+    public bool shielded = false;
+    public float shieldTime = 10f;
+    private float shielfctime = 0;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -111,6 +115,15 @@ public class PlayerMovement : MonoBehaviour
             activeMvSpeed = mvSpeed;
             timeIn = 0;
         }
+        if (shielded)
+        {
+            shielfctime -= Time.deltaTime;
+        }
+        if (shielfctime < 0)
+        {
+            shielded = false;
+            shielfctime = 0;
+        }
         
     }
     void OnTriggerEnter2D(Collider2D collision)
@@ -129,11 +142,22 @@ public class PlayerMovement : MonoBehaviour
             tripleShot = true;
             Console.WriteLine("triple Obtained");
         }
+        if (collision.CompareTag("Shield"))
+        {
+            Destroy(collision.gameObject);
+            shielded = true;
+            shielfctime = shieldTime;
+            Debug.Log("Shield");
+        }
         
     }
 
     public float getDashTime()
     {
         return timeIn;
+    }
+    public float getShieldTime()
+    {
+        return shielfctime;
     }
 }
