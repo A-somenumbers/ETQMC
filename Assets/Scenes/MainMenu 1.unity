@@ -528,8 +528,8 @@ MonoBehaviour:
     around half health \n \nThere are powerups scatered across the map to help you\nuse
     these to eliminate all of the enemies and win \n\nThis game serves as a test
     for enemy AI, \nThey use A-star to track our player & have a rage mode based
-    on health \n\nControls:\nWSAD - Movement\nShift - Quick Dash\nLeft Click/ Left
-    Control - Shoot\n"
+    on health \n\nControls:\nWSAD - Movement , Shift - Quick Dash\nLeft Click/ Left
+    Control - Shoot\nEsc -Pause"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c9adb1f542a93ae489bacfeae21e8394, type: 2}
   m_sharedMaterial: {fileID: -8643439910342830561, guid: c9adb1f542a93ae489bacfeae21e8394, type: 2}
