@@ -524,7 +524,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Credits: \nAnish Adimulam - UI & Main Player\nTarang Sonkusare - AI &
     Nemisis control\nKevin Arellano - Camera System & Misc. \n\nFont - 8-bit limit
-    by \xC6nigma Fonts on 1001fonts.com\n"
+    by \xC6nigma Fonts on 1001fonts.com\nPowerup sprites & Indicators done by Anish
+    Adimulam\nTileset created with the use of AI\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c9adb1f542a93ae489bacfeae21e8394, type: 2}
   m_sharedMaterial: {fileID: -8643439910342830561, guid: c9adb1f542a93ae489bacfeae21e8394, type: 2}
@@ -707,7 +708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 120, y: -120}
+  m_AnchoredPosition: {x: 150, y: -150}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5000006, y: 0.5000003}
 --- !u!114 &1090502378
